@@ -20,6 +20,7 @@ Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 // LCD prop
 #define LCD_CONTRAST_PIN 10
 #define LCD_CONTRAST 100
+#define LCD_BRIGHT_PIN 9
 LiquidCrystal lcd(14, 15, 16, 17, 18, 19);
 
 //protocol 
@@ -50,8 +51,8 @@ void setup() {
   lcd.clear();
   pinMode(LCD_CONTRAST_PIN, OUTPUT);
   analogWrite(LCD_CONTRAST_PIN, LCD_CONTRAST);
-  pinMode(9, OUTPUT);
-  digitalWrite(9, HIGH);
+  pinMode(LCD_BRIGHT_PIN, OUTPUT);
+  digitalWrite(LCD_BRIGHT_PIN, HIGH);
   sendComandToPC(ARDUINO_INIT);
 }
 
