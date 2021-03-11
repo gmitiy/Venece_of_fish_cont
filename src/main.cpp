@@ -2,7 +2,138 @@
 #include <Keypad.h>
 #include <Wire.h>
 #include <LiquidCrystal.h>
-#include <symbol.h>
+
+byte s1[] = {
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00000
+};
+
+byte s2[] = {
+  B10001,
+  B01010,
+  B00100,
+  B00000,
+  B10001,
+  B01010,
+  B00100,
+  B00000
+};
+
+byte s3[] = {
+  B10101,
+  B01110,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00000
+};
+
+byte s4[] = {
+  B00000,
+  B00000,
+  B00000,
+  B10001,
+  B01110,
+  B00000,
+  B00000,
+  B00000,
+};
+
+byte s5[] = {
+  B11111,
+  B10001,
+  B10001,
+  B10001,
+  B10001,
+  B10001,
+  B11111,
+  B00000
+};
+
+byte s6[] = {
+  B00100,
+  B01010,
+  B01010,
+  B01010,
+  B01010,
+  B01010,
+  B01110,
+  B00000
+};
+
+byte s7[] = {
+  B11111,
+  B10101,
+  B11111,
+  B10101,
+  B11111,
+  B10101,
+  B11111,
+  B00000
+};
+
+byte s8[] = {
+  B00000,
+  B00100,
+  B01110,
+  B11011,
+  B10001,
+  B00000,
+  B00000,
+  B00000
+};
+
+byte s9[] = {
+  B00100,
+  B01010,
+  B10001,
+  B10001,
+  B10001,
+  B01010,
+  B00100,
+  B00000
+};
+
+byte s10[] = {
+  B11100,
+  B11100,
+  B01000,
+  B11100,
+  B11110,
+  B10110,
+  B10111,
+  B00000
+};
+
+byte s11[] = {
+  B00100,
+  B01110,
+  B11011,
+  B10101,
+  B11111,
+  B10101,
+  B10101,
+  B00000
+};
+
+byte ch[] = {
+  B10001,
+  B10001,
+  B10001,
+  B01111,
+  B00001,
+  B00001,
+  B00001,
+  B00000
+};
 
 // Keyboard prop
 const byte ROWS = 4; 
@@ -39,7 +170,7 @@ byte curSlot = 0;
 void sendComandToPC(String command);
 void sendComandToPC(char command);
 void printBuffer();
-void printSpecialChar(char value);
+void printSpecialChar(char value, byte c_col, byte c_row);
 boolean readCommand();
 
 
@@ -109,21 +240,27 @@ boolean readCommand() {
 
 void printBuffer() {
   lcd.clear();
+  byte c_row = 0;
+  byte c_col = 0;
   int maxIndex = buff.length();
   for (int i = 0; i < maxIndex; i++) {
     if (buff[i] == LINE_SEP) {
       lcd.setCursor(0, 1);
+      c_row = 1;
+      c_col = 0;
     } else if (buff[i] == SCHAR_INIT) {
       i++;
-      printSpecialChar(buff[i]);
+      printSpecialChar(buff[i], c_col, c_row);
+      c_col++;
     } else {
       lcd.print(buff[i]);
+      c_col++;
     }
   }
   sendComandToPC(SIG_OK);
 }
 
-void printSpecialChar(char value) {
+void printSpecialChar(char value, byte c_col, byte c_row) {
   if (value == 'A') {
     lcd.createChar(curSlot, s1);
   } else if (value == 'B') {
@@ -146,8 +283,16 @@ void printSpecialChar(char value) {
     lcd.createChar(curSlot, s10);
   } else if (value == 'W') {
     lcd.createChar(curSlot, s11);
+  } else if (value == 'Y') {
+    lcd.createChar(curSlot, ch);
+  } else {
+    return;
   }
+  lcd.setCursor(c_col, c_row);
   lcd.write(curSlot);
   curSlot++;
   if (curSlot > 7) curSlot = 0;
 }
+
+// $^A^W#C^YET: 100;
+// $^A^W#SCORE: 100;
