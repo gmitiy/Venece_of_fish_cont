@@ -161,8 +161,7 @@ LiquidCrystal lcd(14, 15, 16, 17, 18, 19);
 #define RESET_CHAR '&'
 #define LINE_SEP '#'
 #define SCHAR_INIT '^'
-#define ARDUINO_INIT "@INIT"
-#define SIG_OK "@OK"
+
 String buff = ""; 
 byte curSlot = 0;
 
@@ -184,7 +183,6 @@ void setup() {
   analogWrite(LCD_CONTRAST_PIN, LCD_CONTRAST);
   pinMode(LCD_BRIGHT_PIN, OUTPUT);
   digitalWrite(LCD_BRIGHT_PIN, HIGH);
-  sendComandToPC(ARDUINO_INIT);
 }
 
 void loop(){
@@ -257,7 +255,6 @@ void printBuffer() {
       c_col++;
     }
   }
-  sendComandToPC(SIG_OK);
 }
 
 void printSpecialChar(char value, byte c_col, byte c_row) {
@@ -294,5 +291,5 @@ void printSpecialChar(char value, byte c_col, byte c_row) {
   if (curSlot > 7) curSlot = 0;
 }
 
-// $^A^W#C^YET: 100;
+// $^A^W#C^YET: 100000;
 // $^A^W#SCORE: 100;
